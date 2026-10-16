@@ -1,0 +1,13 @@
+node_modules/
+output/
+model/
+assets/
+.env
+.env.*
+!.env.example
+*.log
+__pycache__/
+*.py[cod]
+*.blend1
+.DS_Store
+Thumbs.db

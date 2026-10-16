@@ -1,0 +1,14 @@
+{
+  "name": "ririra-card",
+  "version": "1.0.0",
+  "private": true,
+  "description": "本机 3D 角色闪卡工作台：模型导入、FF14 风格卡面、高清 PNG 与 GIF 导出",
+  "license": "AGPL-3.0-or-later",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node scripts/serve_realtime.cjs",
+    "check": "node scripts/check.cjs"
+  }
+}
