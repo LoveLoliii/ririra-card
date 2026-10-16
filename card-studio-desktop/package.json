@@ -1,0 +1,1 @@
+{"name":"ririra-card-studio","version":"0.1.0","private":true,"license":"AGPL-3.0-or-later","scripts":{"build":"pwsh -NoProfile -File scripts/build.ps1","test":"pwsh -NoProfile -File scripts/build.ps1 -Test","smoke":"node scripts/smoke.cjs"}}

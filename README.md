@@ -1,5 +1,11 @@
 # Ririra Card · 3D 闪卡工作台
 
+在闪卡工作台导出 **.ririra 卡片**，再交给桌面挂件导入。一个文件包含模型、贴图、卡面设置与观察角度；挂件展示无需安装游戏、Blender 或 Node.js。格式说明见 [ririra-format](ririra-format/README.md)。
+
+Windows 桌面版源码：[闪卡工作台](card-studio-desktop/README.md)、[桌面挂件](card-desktop-pendant/README.md)。两个项目均提供 Tauri + 系统 WebView2 的轻量实现。工作台含默认折叠的设置面板、统一控件样式和本机模型转换。
+
+FF14 模型准备步骤见 [FF14 模型导出说明](card-studio-desktop/FF14模型导出说明.txt)。Blender 安装包和私人角色素材不包含在源码仓库中。
+
 在浏览器里制作可自由旋转的角色收藏卡，导入自己的模型，调整卡面并导出 PNG / 循环 GIF。面向 FF14 玩家与角色创作者，也可使用普通 GLB / glTF 模型。
 
 项目附带原创程序生成的水晶示例，不包含游戏角色模型、游戏贴图或作者的私人角色数据。
@@ -65,7 +71,7 @@ npm run check
 - `scripts/`：本机服务器、FF14 材质转换和语法检查。
 - `demo-assets.js`：原创水晶示例。
 
-设置保存在当前浏览器的 localStorage 中；不同浏览器不会自动同步。尚无项目文件的保存/恢复功能。
+设置保存在当前浏览器的 localStorage 中；不同浏览器不会自动同步。可导出 `.ririra` 用于桌面挂件展示；它不等同于完整的可编辑工程保存功能。
 
 ## 许可与素材
 

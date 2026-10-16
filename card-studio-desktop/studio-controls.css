@@ -1,0 +1,52 @@
+/* Shared control language for every expanded settings panel. */
+.studio-organized .side{--field-bg:#17141e;--field-border:#ffffff1c;--control-text:#e2d1db;--control-muted:#ac96a4;--control-accent:#d2a699;font-size:12px;line-height:1.6}
+.studio-organized .side button,.studio-organized .side input,.studio-organized .side select,.studio-organized .side textarea{font-family:'Segoe UI','Microsoft YaHei',sans-serif;font-size:12px;box-sizing:border-box}
+.studio-organized .side button{border:1px solid var(--field-border);border-radius:7px;background:#ffffff04;color:var(--control-text);cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.studio-organized .side button:hover{background:#d2a69910;border-color:#d2a69966}
+.studio-organized .side button:disabled{cursor:default;opacity:.45}
+.studio-organized .side .primary{min-height:37px;padding:9px 12px;border-color:#d2a69970;background:#caa294;color:#271d24;font-weight:500}
+.studio-organized .side .primary:hover{background:#dbb4a5;border-color:#dbb4a5}
+.studio-organized .side .secondary{min-height:34px;padding:8px 10px;background:#ffffff04;color:#cbb6c4}
+.studio-organized .side .text-button{background:none;border:0;padding:5px 0;color:#bca2b1;font-size:11px;text-decoration:none;text-align:left}
+.studio-organized .side .text-button:hover{color:#ead0c3}
+.studio-organized .side input[type=text],.studio-organized .side input[type=search],.studio-organized .side textarea,.studio-organized .side select{display:block;width:100%;min-height:36px;padding:8px 10px;border:1px solid var(--field-border);border-radius:7px;background:var(--field-bg);color:var(--control-text);outline:none;line-height:1.5;margin:0;transition:border-color .15s,box-shadow .15s}
+.studio-organized .side select{appearance:none;padding-right:31px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m2 2 4 4 4-4' fill='none' stroke='%23b59dab' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center}
+.studio-organized .side select option{background:#211a28;color:#e2d1db}
+.studio-organized .side input::placeholder,.studio-organized .side textarea::placeholder{color:#766575}
+.studio-organized .side input[type=text]:focus,.studio-organized .side input[type=search]:focus,.studio-organized .side textarea:focus,.studio-organized .side select:focus{border-color:#d2a69999;box-shadow:0 0 0 2px #d2a69912}
+.studio-organized .side textarea{resize:vertical;min-height:78px}
+.studio-organized .side .text-main,.studio-organized .side .text-more{display:grid;grid-template-columns:minmax(0,1fr);gap:13px}
+.studio-organized .side .card-text label,.studio-organized .side .gif-export>label,.studio-organized .side .png-export>label,.studio-organized .side .background-filter-label,.studio-organized .side .frame-filter-label{display:block;font-size:11px;line-height:1.5;color:var(--control-muted);margin:0 0 6px}
+.studio-organized .side .gif-export>select+label{margin-top:13px}
+.studio-organized .side .card-backgrounds>label:not(:first-child){margin-top:11px}
+.studio-organized .side .presets,.studio-organized .side .style-grid,.studio-organized .side .lighting-presets,.studio-organized .side .import-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 13px}
+.studio-organized .side .presets{grid-template-columns:repeat(4,minmax(0,1fr))}
+.studio-organized .side .presets button,.studio-organized .side .style-grid button,.studio-organized .side .lighting-presets button{min-height:35px;padding:8px 6px;font-size:11px;line-height:1.5}
+.studio-organized .side .lighting-presets button:last-child:nth-child(odd),.studio-organized .side .style-grid button:last-child:nth-child(odd){grid-column:1/-1}
+.studio-organized .side button[aria-pressed=true],.studio-organized .side .presets button.active{border-color:#c9a08f88;background:#c9a08f18;color:#f0d6c7}
+.studio-organized .side .lighting-toggle,.studio-organized .side .effect-toggle,.studio-organized .side .toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:30px;font-size:11px;color:#cbb6c4;margin:0 0 12px}
+.studio-organized .side .lighting-toggle input[type=checkbox],.studio-organized .side .effect-toggle input[type=checkbox],.studio-organized .side .toggle input[type=checkbox]{appearance:none;position:relative;display:block;flex:0 0 32px;width:32px;height:18px;margin:0;border:1px solid #ffffff20;border-radius:12px;background:#352b3a;cursor:pointer;transition:background .15s}
+.studio-organized .side .lighting-toggle input::before,.studio-organized .side .effect-toggle input::before,.studio-organized .side .toggle input::before{content:'';position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#b5a3b0;transition:transform .15s,background .15s}
+.studio-organized .side .lighting-toggle input:checked,.studio-organized .side .effect-toggle input:checked,.studio-organized .side .toggle input:checked{background:#a47986;border-color:#cba09a}
+.studio-organized .side .lighting-toggle input:checked::before,.studio-organized .side .effect-toggle input:checked::before,.studio-organized .side .toggle input:checked::before{transform:translateX(14px);background:#fff2e8}
+.studio-organized .side .range-block{margin-top:15px}
+.studio-organized .side .range-label,.studio-organized .side .effect-range{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 7px;font-size:11px;color:var(--control-muted)}
+.studio-organized .side .range-label output,.studio-organized .side .effect-range output{padding:1px 6px;min-width:34px;text-align:center;border-radius:4px;background:#ffffff05;color:#d8b5a8;font-size:10px;font-variant-numeric:tabular-nums}
+.studio-organized .side input[type=range]{appearance:none;display:block;width:100%;height:20px;padding:0;margin:0;background:transparent;border:0;accent-color:var(--control-accent)}
+.studio-organized .side input[type=range]::-webkit-slider-runnable-track{height:4px;background:#433440;border-radius:4px}
+.studio-organized .side input[type=range]::-webkit-slider-thumb{appearance:none;width:13px;height:13px;margin-top:-4.5px;border-radius:50%;background:#d2a699;border:2px solid #edcabb}
+.studio-organized .side input:disabled{opacity:.4}
+.studio-organized .side .lighting-colors{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.studio-organized .side .lighting-colors label{display:block;color:var(--control-muted);font-size:11px}
+.studio-organized .side input[type=color]{display:block;width:100%;height:34px;margin-top:6px;padding:3px;border:1px solid var(--field-border);border-radius:7px;background:var(--field-bg)}
+.studio-organized .side details:not(.studio-section)>summary{font-size:11px;color:#c5abba;cursor:pointer;line-height:1.6;margin:13px 0 10px}
+.studio-organized .side .studio-export-format>summary{font-size:12px;margin:0;padding:12px 0}
+.studio-organized .side .studio-export-format>div{padding:0 1px 14px}
+.studio-organized .side p:not(.status){font-size:10px;line-height:1.8;color:#95818f;margin:10px 0}
+.studio-organized .side .gif-export button,.studio-organized .side .ririra-export button,.studio-organized .side #save,.studio-organized .side #lighting-reset,.studio-organized .side .text-reset{width:100%;margin-top:12px}
+.studio-organized .side .effect-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:270px;overflow:auto;padding:2px 1px;margin:10px 0 14px;scrollbar-width:thin}
+.studio-organized .side .effect-grid label{display:flex;align-items:center;gap:7px;min-height:36px;padding:8px;border:1px solid var(--field-border);border-radius:7px;background:#ffffff03;color:#bba6b5;font-size:10px;cursor:pointer}
+.studio-organized .side .effect-grid label:has(input:checked){border-color:#c9a08f77;background:#c9a08f12;color:#ebcebf}
+.studio-organized .side .effect-grid input{width:13px;height:13px;margin:0;flex:0 0 13px;accent-color:#c9a08f}
+.studio-organized .side button:focus-visible,.studio-organized .side input[type=checkbox]:focus-visible,.studio-organized .side summary:focus-visible{outline:2px solid #d2a699;outline-offset:2px}
+.studio-organized .side .studio-panel-bar button{min-height:0;background:none;border:0;font-size:10px;padding:4px 0;color:#ac91a1}

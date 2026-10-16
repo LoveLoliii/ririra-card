@@ -1,0 +1,13 @@
+Blender 5.1.2 · Windows x64 官方安装包
+
+文件：blender-5.1.2-windows-x64.msi
+用途：Ririra 闪卡工作台中 FF14 原始模型的材质还原和贴图烘焙。
+此版本已在本项目完成 FF14 原始导出 → GLB → PNG/GIF/ririra 卡片验证。
+
+双击 MSI 安装；完成后，在工作台顶部点击“设置 Blender”，
+选择安装目录内的 blender.exe（通常位于 C:\Program Files\Blender Foundation\Blender 5.1\）。
+然后选择包含 cache 文件夹的完整 FF14 模型导出目录。
+普通 GLB 模型导入不需要 Blender。
+
+官方来源：https://download.blender.org/release/Blender5.1/
+安装包已与同目录 blender-5.1.2.sha256 中的官方 SHA256 值核对。

@@ -1,3 +1,6 @@
+import { GLTFExporter } from './vendor/three/addons/exporters/GLTFExporter.js';
+import { decompress } from './vendor/three/addons/utils/WebGLTextureUtils.js';
+import { initRiriraExport } from './ririra-export.js';
 import * as THREE from './vendor/three/three.module.js';
 import { OrbitControls } from './vendor/three/addons/controls/OrbitControls.js';
 import { createDemoAssets } from './demo-assets.js';
@@ -15,7 +18,7 @@ import { createModelLighting } from './model-lighting.js';
 const $=s=>document.querySelector(s),canvas=$('#canvas'),host=$('.viewer');
 const exampleDownloads=$('.bottom').innerHTML;
 let renderer,controls,model,ready=false,lost=false,cardVisible=true,raf=0;
-let backgrounds,cardText,cardEffects,characterOpacity,cardFrames,modelLighting;
+let backgrounds,cardText,cardEffects,characterOpacity,cardFrames,modelLighting,bundleBaseTextures;
 let effectsRaf=0,effectsLastTime=0;
 let exporting=false;
 for(const event of ['dragover','drop'])host.addEventListener(event,e=>{if(exporting){e.preventDefault();e.stopImmediatePropagation();}},true);
@@ -25,7 +28,7 @@ const defaultDistance=4.6,homeTarget=new THREE.Vector3(0,.025,0);
 const state={ready:false,renderMode:'live-webgl',yaw:0,pitch:0,zoom:100,meshCount:0,triangleCount:0,modelName:'原创水晶示例',imported:false};
 const styles=createRenderStyles({onChange:value=>{state.style=value.id;state.styleStrength=value.strength;invalidate();}});
 let resolveReady;window.characterReady=new Promise(r=>resolveReady=r);
-window.__card3d={state,getState:()=>({...state,camera:camera.position.toArray(),target:controls?.target.toArray(),drawCalls:renderer?.info.render.calls,cardVisible,wireframe:$('#wireframe').checked}),setView:(yaw,pitch=0)=>setView(yaw,pitch),reset:()=>reset(),render:()=>draw(),renderer:()=>renderer};
+window.__card3d={state,getState:()=>({...state,camera:camera.position.toArray(),target:controls?.target.toArray(),drawCalls:renderer?.info.render.calls,cardVisible,wireframe:$('#wireframe').checked}),setView:(yaw,pitch=0)=>setView(yaw,pitch),reset:()=>reset(),render:()=>draw(),renderer:()=>renderer,applyRiriraView};
 
 function shape(w,h,r){const p=new THREE.Shape(),x=-w/2,y=-h/2;p.moveTo(x+r,y);p.lineTo(x+w-r,y);p.quadraticCurveTo(x+w,y,x+w,y+r);p.lineTo(x+w,y+h-r);p.quadraticCurveTo(x+w,y+h,x+w-r,y+h);p.lineTo(x+r,y+h);p.quadraticCurveTo(x,y+h,x,y+h-r);p.lineTo(x,y+r);p.quadraticCurveTo(x,y,x+r,y);return p;}
 function faceGeometry(w=1.4,h=2.1,r=.025){const g=new THREE.ShapeGeometry(shape(w,h,r),24),uv=g.attributes.uv,positions=g.attributes.position;for(let i=0;i<uv.count;i++)uv.setXY(i,positions.getX(i)/w+.5,positions.getY(i)/h+.5);return g;}
@@ -44,7 +47,7 @@ function reset(){if(!controls)return;controls.target.copy(homeTarget);setView(0,
 function resize(){if(!renderer||exporting)return;const w=host.clientWidth,h=host.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);draw();}
 function onFailure(error){console.error(error);$('#loading').hidden=false;$('#loading-label').textContent='暂时无法载入 3D 角色';$('#loading-detail').textContent='请重新加载；本页需要支持 WebGL 的浏览器。';$('#retry').hidden=false;$('#retry').onclick=()=>location.reload();}
 function materialList(o){return Array.isArray(o.material)?o.material:o.material?[o.material]:[];}
-function installModel(content,{name='原创水晶示例',imported=false}={}){
+function installModel(content,{name='原创水晶示例',imported=false,prepared=false}={}){
   content.updateMatrixWorld(true);
   const bounds=new THREE.Box3().setFromObject(content,true),size=bounds.getSize(new THREE.Vector3()),center=bounds.getCenter(new THREE.Vector3());
   if(bounds.isEmpty()||!Number.isFinite(size.length())||size.length()<1e-8)throw Error('模型中没有可显示的三维网格。');
@@ -54,11 +57,31 @@ function installModel(content,{name='原创水晶示例',imported=false}={}){
     for(const mat of materialList(o)){mat.wireframe=$('#wireframe').checked;styles.attach(mat);modelLighting?.attach(mat);for(const value of Object.values(mat))if(value?.isTexture)value.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);}
   });
   if(!count)throw Error('模型中没有可显示的三维网格。');
-  if(imported){const fit=new THREE.Group(),factor=Math.min(1.45/Math.max(size.y,1e-6),1.1/Math.max(size.x,1e-6));fit.add(content);fit.scale.setScalar(factor);fit.position.set(-center.x*factor,.07-center.y*factor,-center.z*factor);next.add(fit);}else next.add(content);
+  if(imported&&!prepared){const fit=new THREE.Group(),factor=Math.min(1.45/Math.max(size.y,1e-6),1.1/Math.max(size.x,1e-6));fit.add(content);fit.scale.setScalar(factor);fit.position.set(-center.x*factor,.07-center.y*factor,-center.z*factor);next.add(fit);}else next.add(content);
   const old=model;model=next;character.add(model);if(old){character.remove(old);disposeModel(old);}
   Object.assign(state,{modelName:name,imported,meshCount:count,triangleCount:triangles});$('.subtitle').textContent=`${name} · 3D 模型`;reset();
   $('.bottom').innerHTML=imported?'单指旋转，双指缩放与平移。<br>可导入自己的模型并导出 PNG / GIF。':exampleDownloads;
 }
+
+async function captureRirira(){
+  const enabled=controls.enabled;controls.enabled=false;exporting=true;refreshEffectsAnimation();
+  try{
+    const exporter=new GLTFExporter();exporter.setTextureUtils({decompress});
+    exporter.register(()=>({writeNode:(_,def)=>{delete def.extras;},writeMaterialAsync:async(_,def)=>{delete def.extras;},writeTexture:(_,def)=>{delete def.extras;}}));
+    model.updateMatrixWorld(true);
+    const bytes=await exporter.parseAsync(model,{binary:true,trs:true,onlyVisible:true,maxTextureSize:8192});
+    const png=async (image,max=8192)=>{const c=document.createElement('canvas');const factor=Math.min(1,max/Math.max(image.width,image.height));c.width=Math.max(1,Math.round(image.width*factor));c.height=Math.max(1,Math.round(image.height*factor));c.getContext('2d').drawImage(image,0,0,c.width,c.height);const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));if(!blob)throw Error('卡面图片无法打包');return blob;};
+    draw();
+    return {title:cardText.getState().title||'我的卡片',modelName:state.modelName,settings:{'card.text':JSON.stringify(cardText.getState()),'card.background':backgrounds.getState().id,'card.frame':cardFrames.getState().id,'card.effects':JSON.stringify(cardEffects.getState()),'card.renderStyle':JSON.stringify(styles.getState()),'card.lighting':JSON.stringify(modelLighting.getState()),'card.characterTransparency':String(characterOpacity.getValue())},view:{position:camera.position.toArray(),target:controls.target.toArray(),cardVisible,wireframe:$('#wireframe').checked,phase:cardEffects.getPhase()},assets:{'model.glb':new Blob([bytes],{type:'model/gltf-binary'}),'background.png':await png(bundleBaseTextures.bg.image),'foreground.png':await png(bundleBaseTextures.petals.image),'preview.png':await png(canvas,1280)}};
+  }finally{controls.enabled=enabled;exporting=false;refreshEffectsAnimation();draw();}
+}
+function applyRiriraView(view){
+  controls.target.fromArray(view.target);camera.position.fromArray(view.position);camera.lookAt(controls.target);controls.update();
+  $('#show-card').checked=view.cardVisible;cardVisible=view.cardVisible;
+  $('#wireframe').checked=view.wireframe;model.traverse(o=>{for(const mat of materialList(o))mat.wireframe=view.wireframe;});
+  cardEffects.setPhase(view.phase);draw();refreshEffectsAnimation();
+}
+
 function exportName(){return `${(cardText.getState().title||'闪卡').replace(/[<>:"/\\|?*\x00-\x1f]/g,'_').slice(0,60)}-${backgrounds.getState().name}-${styles.getState().name}-${cardEffects.getLabel()}-${cardFrames.getState().name}-${modelLighting.getLabel()}`;}
 function beginGifCapture(width,height){
   const limit=Math.min(renderer.capabilities.maxTextureSize,renderer.getContext().getParameter(renderer.getContext().MAX_RENDERBUFFER_SIZE));
@@ -98,6 +121,7 @@ async function init(){try{
   const {scene:demo,bg,petals}=await createDemoAssets();
   installModel(demo,{name:'原创水晶示例',imported:true});
   const slab=new THREE.Mesh(new THREE.ExtrudeGeometry(shape(1.4,2.1,.025),{depth:.012,bevelEnabled:false,curveSegments:24}),[new THREE.MeshStandardMaterial({color:0x2a202c,roughness:.7,metalness:.2}),new THREE.MeshStandardMaterial({color:0xa67b72,roughness:.4,metalness:.6})]);slab.position.z=-.019;print.add(slab);
+  bundleBaseTextures={bg,petals};
   const backgroundMesh=face(bg,.0001,print);
   const metalRims=[ring(1.4,2.1,.025,.001,.0025,0xd2a99c),ring(1.338,2.035,.025,.002,.0009,0xc7a092)];print.add(...metalRims);
   const ambient=new THREE.AmbientLight(0xffffff,1.7),key=new THREE.DirectionalLight(0xffe3d1,2.5);key.position.set(-2,3,4);print.add(ambient,key);
@@ -113,6 +137,7 @@ async function init(){try{
   characterOpacity=createCharacterOpacity({renderer,scene:character,camera,onChange:value=>{state.characterTransparency=value;invalidate();}});
   initPngExport({canStart:()=>ready&&!lost&&!$('#import-files')?.disabled,beginCapture:beginGifCapture,captureFrame:s=>captureGifFrame(s,0,0,0,true),endCapture:endGifCapture,fileName:()=>exportName(),viewportSize:()=>[canvas.width,canvas.height]});
   initGifExport({canStart:()=>ready&&!lost&&!$('#import-files')?.disabled,beginCapture:beginGifCapture,captureFrame:captureGifFrame,endCapture:endGifCapture,fileName:()=>exportName()+'-循环',loopDuration:()=>{const e=cardEffects.getState();return e.layers.length&&e.strength>0?2400*100/e.speed:2400;}});
+  initRiriraExport({canStart:()=>ready&&!lost&&!exporting&&!$('#import-files')?.disabled,capture:captureRirira,fileName:()=>cardText.getState().title});
   ready=true;state.ready=true;$('#loading').hidden=true;resize();refreshEffectsAnimation();resolveReady(true);window.dispatchEvent(new Event('card-ready'));
 }catch(e){resolveReady(false);onFailure(e);}}
 

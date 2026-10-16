@@ -1,0 +1,56 @@
+{
+  "name": "card-desktop-pendant",
+  "version": "0.2.0",
+  "private": true,
+  "description": "可旋转的透明 3D 桌面闪卡挂件",
+  "author": "LoveLoliii",
+  "license": "AGPL-3.0-or-later",
+  "main": "app/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "preview": "node scripts/preview.cjs",
+    "check": "node scripts/check.cjs",
+    "test": "node --test test/*.test.cjs",
+    "smoke": "electron . --smoke-test",
+    "pack": "electron-builder --win --dir",
+    "dist": "electron-builder --win portable",
+    "dist:lite": "pwsh -NoProfile -File scripts/build-lite.ps1",
+    "test:lite": "pwsh -NoProfile -File scripts/build-lite.ps1 -Test"
+  },
+  "devDependencies": {
+    "electron": "44.8.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "io.ririra.card.pendant",
+    "productName": "Ririra Card Pendant",
+    "asar": false,
+    "compression": "maximum",
+    "electronLanguages": ["zh-CN", "en-US"],
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "app/**",
+      "renderer/**",
+      "assets/**",
+      "core/**",
+      "LICENSE",
+      "THIRD_PARTY_NOTICES.md",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "assets/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "Ririra-Card-Pendant-${version}-Windows.exe"
+    }
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

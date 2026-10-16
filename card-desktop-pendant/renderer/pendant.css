@@ -1,0 +1,17 @@
+body[data-pendant=true],body[data-pendant=true] .viewer{background:transparent!important}
+body[data-pendant=true]{overflow:hidden;user-select:none}
+body[data-pendant=true] header,body[data-pendant=true] .side,body[data-pendant=true] .view-note,body[data-pendant=true] .view-hint{display:none!important}
+body[data-pendant=true] .layout{display:block;min-height:0;max-width:none;margin:0;width:100vw;height:100vh}
+body[data-pendant=true] .viewer{width:100vw;height:100vh;min-height:0;max-height:none}
+body[data-pendant=true] .loading{font-size:12px;letter-spacing:0;background:#191727db;border-radius:16px;inset:20% 10%;padding:18px}
+.pendant-toolbar{display:none}
+body[data-pendant=true] .pendant-toolbar{display:flex;align-items:center;position:fixed;z-index:20;top:4px;left:50%;transform:translateX(-50%);height:28px;gap:2px;padding:2px 5px;border:1px solid #e5bbd13b;border-radius:18px;background:#201c2ce8;opacity:0;transition:opacity .16s;box-shadow:0 2px 12px #0004}
+body[data-pendant=true]:hover .pendant-toolbar{opacity:1}
+.pendant-toolbar button{width:27px;height:22px;border:0;border-radius:12px;background:transparent;color:#ead1c6;font:17px/20px 'Segoe UI',sans-serif;padding:0;-webkit-app-region:no-drag}
+.pendant-toolbar button:hover{background:#edbec526}
+.pendant-grip{display:block;width:26px;text-align:center;color:#bba3b6;font-size:20px;cursor:move;-webkit-app-region:drag}
+.pendant-tip{display:none}
+body[data-pendant=true] .pendant-tip{display:block;position:fixed;bottom:2px;left:8px;right:8px;text-align:center;color:#dfccd9;font:10px/22px 'Microsoft YaHei',sans-serif;pointer-events:none;opacity:0;text-shadow:0 1px 4px #000,0 1px 3px #000;transition:opacity .16s}
+body[data-pendant=true]:hover .pendant-tip{opacity:1}
+body[data-locked=true] .pendant-toolbar,body[data-locked=true] .pendant-tip{display:none!important}
+.pendant-editor-note{padding:8px 24px;background:#302232;color:#dbc4d0;border-bottom:1px solid #ffffff10;font-size:11px;letter-spacing:.4px}
